@@ -10,6 +10,18 @@
 
             <Grid ColumnDefinitions="Auto, *" RowSpacing="10" ColumnSpacing="10" VerticalOptions="Center">
                 <Label Grid.Row="0" Grid.Column="0"
+                       Text="Id" 
+                       SemanticProperties.HeadingLevel="Level1"
+                       Style="{StaticResource SubHeadline}"/>
+                <Entry Grid.Row="0" Grid.Column="1"
+                       Placeholder="Número do recibo" 
+                       Text="{Binding Id}"
+                       SemanticProperties.HeadingLevel="Level2"
+                       SemanticProperties.Description="Number of the Acquittance"/>
+            </Grid>            
+            
+            <Grid ColumnDefinitions="Auto, *" RowSpacing="10" ColumnSpacing="10" VerticalOptions="Center">
+                <Label Grid.Row="0" Grid.Column="0"
                        Text="Cliente" 
                        SemanticProperties.HeadingLevel="Level1"
                        Style="{StaticResource SubHeadline}"/>
@@ -38,6 +50,7 @@
                        SemanticProperties.HeadingLevel="Level1"
                        Style="{StaticResource SubHeadline}"/>
                 <Editor Grid.Row="0" Grid.Column="1"
+                       Placeholder="Descrição do serviço" 
                        Text="{Binding ServiceDescription}"
                        SemanticProperties.HeadingLevel="Level2"
                        SemanticProperties.Description="Description of the acquittance"/>
@@ -47,7 +60,6 @@
                 Text="Gerar PDF" 
                 SemanticProperties.Hint="Generates the pdf file"
                 Command="{Binding GeneratePDFCommand}"
-                CommandParameter="true"
                 HorizontalOptions="Fill" />
 
             <Button

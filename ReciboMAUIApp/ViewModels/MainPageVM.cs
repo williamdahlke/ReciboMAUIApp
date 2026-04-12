@@ -7,6 +7,9 @@ namespace ReciboMAUIApp.ViewModels
     public partial class MainPageVM : ObservableObject
     {
         [ObservableProperty]
+        private int _id;
+
+        [ObservableProperty]
         private string? _customerName;
 
         [ObservableProperty]
@@ -15,44 +18,40 @@ namespace ReciboMAUIApp.ViewModels
         [ObservableProperty]
         private string? _serviceDescription;
 
-        [RelayCommand] 
+        [RelayCommand]
         private async Task GenerateImage()
         {
+            string path = $"{FileSystem.AppDataDirectory}\\Output";
             try
             {
-                CreateFolder();
-                var acquittance = new AcquittanceDocument(155, _price, _customerName, _serviceDescription);
+                CreateFolder(path);
+                var acquittance = new AcquittanceDocument(_id, _price, _customerName, _serviceDescription);
                 IEnumerable<byte[]> images = acquittance.GenerateImages();
-                
-                int i = 0;
-                foreach (var imgBytes in images)
+                var imgB = images.First();
+                File.WriteAllBytes($"{path}\\{acquittance.ToString()}.png", imgB);
+
+                await Launcher.OpenAsync(new OpenFileRequest
                 {
-                    File.WriteAllBytes($"{acquittance.ToString()}.png", imgBytes);
-                    i++;
-                }
+                    File = new ReadOnlyFile($"{path}\\{acquittance.ToString()}.png")
+                });
 
                 await Application.Current.MainPage.DisplayAlert("Aviso", "Operação realizada com sucesso!", "OK");
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
                 Console.WriteLine(ex.StackTrace);
                 await Application.Current.MainPage.DisplayAlert("Erro", "Não foi possível gerar as imagens!", "OK");
-            }         
+            }
         }
 
         [RelayCommand]
-        private async Task GeneratePDF(object hasToOpenObject)
+        private async Task GeneratePDF()
         {
             try
             {
-                CreateFolder();
-                bool hasToOpen = (bool)hasToOpenObject;
-                var acquittance = new AcquittanceDocument(155, _price, _customerName, _serviceDescription);
-                if (hasToOpen)
-                    acquittance.GeneratePdfAndShow();
-                else
-                    acquittance.GeneratePdf($"{acquittance.ToString()}.pdf");
+                var acquittance = new AcquittanceDocument(_id, _price, _customerName, _serviceDescription);
+                acquittance.GeneratePdfAndShow();
                 await Application.Current.MainPage.DisplayAlert("Aviso", "Operação realizada com sucesso!", "OK");
             }
             catch (Exception ex)
@@ -63,11 +62,10 @@ namespace ReciboMAUIApp.ViewModels
             }
         }
 
-        private void CreateFolder()
+        private void CreateFolder(string path)
         {
-            const string FOLDER_NAME = "Output";
-            if (!File.Exists(FOLDER_NAME))
-                Directory.CreateDirectory(FOLDER_NAME);
+            if (!File.Exists(path))
+                Directory.CreateDirectory(path);
         }
     }
 }

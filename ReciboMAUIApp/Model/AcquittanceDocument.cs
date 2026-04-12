@@ -32,7 +32,7 @@ public class AcquittanceDocument : IDocument
 
     public override string ToString()
     {
-        return $"{Id}_{ServiceDate}";
+        return $"{Id}_{DateTime.Now.Day}_{DateTime.Now.Month}_{DateTime.Now.Year}";
     }
 
     public void Compose(IDocumentContainer container)
