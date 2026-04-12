@@ -1,8 +1,23 @@
 ﻿using QuestPDF.Fluent;
 using QuestPDF.Infrastructure;
+using ReciboMAUIApp.Model;
 
 public class AcquittanceDocument : IDocument
 {
+    public AcquittanceDocument(int id, double? price, string customerName, string description)
+    {
+        Id = id;
+        Price = price.GetValueOrDefault();
+        CustomerName = customerName;
+        Description = description;
+        ServiceDate = DateTime.Now;
+        FactoryName = Factory.Name;
+        FactoryAddress = Factory.Address;
+        FactoryCellPhone = Factory.CellPhone;
+        FactoryDocument = Factory.Document;
+        City = $"{Factory.City}, {Factory.State}, {DateTime.Now.ToLongDateString()}";
+    }
+
     public int Id { get; set; }
     public double Price { get; set; }
     public string? CustomerName { get; set; }
@@ -14,6 +29,11 @@ public class AcquittanceDocument : IDocument
     public string? FactoryAddress { get; set; }
     public string? FactoryDocument { get; set; }
     public string? FactoryCellPhone { get; set; }
+
+    public override string ToString()
+    {
+        return $"{Id}_{ServiceDate}";
+    }
 
     public void Compose(IDocumentContainer container)
     {

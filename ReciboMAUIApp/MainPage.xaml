@@ -8,47 +8,53 @@
             Padding="30,0"
             Spacing="25">
 
-            <HorizontalStackLayout                        
-                       VerticalOptions="Center"
-                       HorizontalOptions="Center">
-                <Label Text="Cliente" 
+            <Grid ColumnDefinitions="Auto, *" RowSpacing="10" ColumnSpacing="10" VerticalOptions="Center">
+                <Label Grid.Row="0" Grid.Column="0"
+                       Text="Cliente" 
                        SemanticProperties.HeadingLevel="Level1"
                        Style="{StaticResource SubHeadline}"/>
-                <Entry Placeholder="Nome do cliente" 
+                <Entry Grid.Row="0" Grid.Column="1"
+                       Placeholder="Nome do cliente" 
                        Text="{Binding CustomerName}"
                        SemanticProperties.HeadingLevel="Level2"
                        SemanticProperties.Description="Name of the customer"/>
-            </HorizontalStackLayout>
+            </Grid>
 
-            <HorizontalStackLayout                        
-                       VerticalOptions="Center"
-                       HorizontalOptions="Center">
-                <Label Text="Valor" 
+            <Grid ColumnDefinitions="Auto, *" RowSpacing="10" ColumnSpacing="10" VerticalOptions="Center">
+                <Label Grid.Row="0" Grid.Column="0"
+                       Text="Valor" 
                        SemanticProperties.HeadingLevel="Level1"
                        Style="{StaticResource SubHeadline}"/>
-                <Entry Placeholder="Valor do recibo" 
+                <Entry Grid.Row="0" Grid.Column="1"
+                       Placeholder="Valor do recibo" 
                        Text="{Binding Price}"
                        SemanticProperties.HeadingLevel="Level2"
                        SemanticProperties.Description="Value of the acquittance"/>
-            </HorizontalStackLayout>
+            </Grid>
 
-            <HorizontalStackLayout                        
-                       VerticalOptions="Center"
-                       HorizontalOptions="Center">
-                <Label Text="Serviço" 
+            <Grid ColumnDefinitions="Auto, *" RowSpacing="10" ColumnSpacing="10" VerticalOptions="Center">
+                <Label Grid.Row="0" Grid.Column="0"
+                       Text="Serviço" 
                        SemanticProperties.HeadingLevel="Level1"
                        Style="{StaticResource SubHeadline}"/>
-                <Editor
+                <Editor Grid.Row="0" Grid.Column="1"
                        Text="{Binding ServiceDescription}"
                        SemanticProperties.HeadingLevel="Level2"
                        SemanticProperties.Description="Description of the acquittance"/>
-            </HorizontalStackLayout>
+            </Grid>
 
             <Button
                 Text="Gerar PDF" 
                 SemanticProperties.Hint="Generates the pdf file"
                 Command="{Binding GeneratePDFCommand}"
+                CommandParameter="true"
                 HorizontalOptions="Fill" />
+
+            <Button
+                Text="Gerar imagem" 
+                SemanticProperties.Hint="Generates the image file"
+                Command="{Binding GenerateImageCommand}"
+                HorizontalOptions="Fill" />            
         </VerticalStackLayout>
     </ScrollView>
 
