@@ -18,7 +18,7 @@ namespace ReciboMAUIApp
                 });
 
             builder.Services.AddTransient<MainPageVM>();
-            QuestPDF.Settings.License = LicenseType.Community;
+            //QuestPDF.Settings.License = LicenseType.Community;
 #if DEBUG
             builder.Logging.AddDebug();
 #endif

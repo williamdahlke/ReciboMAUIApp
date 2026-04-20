@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using QuestPDF.Fluent;
+using System.Net.Http.Json;
 
 namespace ReciboMAUIApp.ViewModels
 {
@@ -26,9 +27,15 @@ namespace ReciboMAUIApp.ViewModels
             {
                 CreateFolder(path);
                 var acquittance = new AcquittanceDocument(_id, _price, _customerName, _serviceDescription);
-                IEnumerable<byte[]> images = acquittance.GenerateImages();
-                var imgB = images.First();
-                File.WriteAllBytes($"{path}\\{acquittance.ToString()}.png", imgB);
+                var httpClient = new HttpClient();
+         
+                var response = await httpClient.PostAsJsonAsync("https://reciboapi.onrender.com/acquittance/image", acquittance);
+                //var response = await httpClient.PostAsJsonAsync("https://localhost:44327/acquittance/image", acquittance);
+                response.EnsureSuccessStatusCode();
+
+                var img = await response.Content.ReadAsByteArrayAsync();
+
+                File.WriteAllBytes($"{path}\\{acquittance.ToString()}.png", img);
 
                 await Launcher.OpenAsync(new OpenFileRequest
                 {
@@ -51,7 +58,21 @@ namespace ReciboMAUIApp.ViewModels
             try
             {
                 var acquittance = new AcquittanceDocument(_id, _price, _customerName, _serviceDescription);
-                acquittance.GeneratePdfAndShow();
+                var httpClient = new HttpClient();
+            
+                //var response = await httpClient.PostAsJsonAsync("https://localhost:44327/acquittance/pdf", acquittance);
+                var response = await httpClient.PostAsJsonAsync("https://reciboapi.onrender.com/acquittance/pdf", acquittance);
+                response.EnsureSuccessStatusCode();
+
+                var bytes = await response.Content.ReadAsByteArrayAsync();
+                var filePath = Path.Combine(FileSystem.CacheDirectory, acquittance.ToString());
+                File.WriteAllBytes($"{filePath}.pdf", bytes);
+
+                await Launcher.OpenAsync(new OpenFileRequest
+                {
+                    File = new ReadOnlyFile($"{filePath}.pdf")
+                });
+
                 await Application.Current.MainPage.DisplayAlert("Aviso", "Operação realizada com sucesso!", "OK");
             }
             catch (Exception ex)
