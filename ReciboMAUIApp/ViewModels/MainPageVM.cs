@@ -1,6 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using QuestPDF.Fluent;
 using System.Net.Http.Json;
 
 namespace ReciboMAUIApp.ViewModels

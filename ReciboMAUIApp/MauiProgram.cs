@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-using QuestPDF.Infrastructure;
-using ReciboMAUIApp.ViewModels;
+﻿using ReciboMAUIApp.ViewModels;
 
 namespace ReciboMAUIApp
 {
@@ -18,7 +16,6 @@ namespace ReciboMAUIApp
                 });
 
             builder.Services.AddTransient<MainPageVM>();
-            //QuestPDF.Settings.License = LicenseType.Community;
 #if DEBUG
             builder.Logging.AddDebug();
 #endif
