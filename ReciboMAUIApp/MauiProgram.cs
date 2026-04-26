@@ -15,6 +15,7 @@ namespace ReciboMAUIApp
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 });
 
+            builder.Services.AddTransient<MainPage>();
             builder.Services.AddTransient<MainPageVM>();
 #if DEBUG
             builder.Logging.AddDebug();
