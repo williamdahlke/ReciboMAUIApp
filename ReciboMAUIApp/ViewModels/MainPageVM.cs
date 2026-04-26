@@ -6,17 +6,33 @@ namespace ReciboMAUIApp.ViewModels
 {
     public partial class MainPageVM : ObservableObject
     {
-        [ObservableProperty]
         private int _id;
+        public int Id
+        {
+            get => _id;
+            set => SetProperty(ref _id, value);
+        }
 
-        [ObservableProperty]
         private string? _customerName;
+        public string? CustomerName
+        {
+            get => _customerName;
+            set => SetProperty(ref _customerName, value);
+        }
 
-        [ObservableProperty]
         private double? _price;
+        public double? Price
+        {
+            get => _price;
+            set => SetProperty(ref _price, value);
+        }
 
-        [ObservableProperty]
         private string? _serviceDescription;
+        public string? ServiceDescription
+        {
+            get => _serviceDescription;
+            set => SetProperty(ref _serviceDescription, value);
+        }
 
         [RelayCommand]
         private async Task GenerateImage()
@@ -25,29 +41,30 @@ namespace ReciboMAUIApp.ViewModels
             try
             {
                 CreateFolder(path);
-                var acquittance = new AcquittanceDocument(_id, _price, _customerName, _serviceDescription);
+                var acquittance = new AcquittanceDocument(Id, Price, CustomerName, ServiceDescription);
                 var httpClient = new HttpClient();
-         
+                httpClient.Timeout = TimeSpan.FromSeconds(30);
+
                 var response = await httpClient.PostAsJsonAsync("https://reciboapi.onrender.com/acquittance/image", acquittance);
                 //var response = await httpClient.PostAsJsonAsync("https://localhost:44327/acquittance/image", acquittance);
                 response.EnsureSuccessStatusCode();
 
                 var img = await response.Content.ReadAsByteArrayAsync();
-
-                File.WriteAllBytes($"{path}\\{acquittance.ToString()}.png", img);
+                string imagePath = Path.Combine(path, $"{acquittance}.png");
+                File.WriteAllBytes(imagePath, img);
 
                 await Launcher.OpenAsync(new OpenFileRequest
                 {
-                    File = new ReadOnlyFile($"{path}\\{acquittance.ToString()}.png")
+                    File = new ReadOnlyFile(imagePath)
                 });
 
-                await Application.Current.MainPage.DisplayAlert("Aviso", "Operação realizada com sucesso!", "OK");
+                await Shell.Current.DisplayAlert("Aviso", "Operação realizada com sucesso!", "OK");
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
                 Console.WriteLine(ex.StackTrace);
-                await Application.Current.MainPage.DisplayAlert("Erro", "Não foi possível gerar as imagens!", "OK");
+                await Shell.Current.DisplayAlert("Erro", "Não foi possível gerar as imagens!", "OK");
             }
         }
 
@@ -56,9 +73,10 @@ namespace ReciboMAUIApp.ViewModels
         {
             try
             {
-                var acquittance = new AcquittanceDocument(_id, _price, _customerName, _serviceDescription);
+                var acquittance = new AcquittanceDocument(Id, Price, CustomerName, ServiceDescription);
                 var httpClient = new HttpClient();
-            
+                httpClient.Timeout = TimeSpan.FromSeconds(30);
+
                 //var response = await httpClient.PostAsJsonAsync("https://localhost:44327/acquittance/pdf", acquittance);
                 var response = await httpClient.PostAsJsonAsync("https://reciboapi.onrender.com/acquittance/pdf", acquittance);
                 response.EnsureSuccessStatusCode();
@@ -72,19 +90,19 @@ namespace ReciboMAUIApp.ViewModels
                     File = new ReadOnlyFile($"{filePath}.pdf")
                 });
 
-                await Application.Current.MainPage.DisplayAlert("Aviso", "Operação realizada com sucesso!", "OK");
+                await Shell.Current.DisplayAlert("Aviso", "Operação realizada com sucesso!", "OK");
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
                 Console.WriteLine(ex.StackTrace);
-                await Application.Current.MainPage.DisplayAlert("Erro", "Não foi possível gerar o PDF!", "OK");
+                await Shell.Current.DisplayAlert("Erro", "Não foi possível gerar o PDF!", "OK");
             }
         }
 
-        private void CreateFolder(string path)
+        private static void CreateFolder(string path)
         {
-            if (!File.Exists(path))
+            if (!Directory.Exists(path))
                 Directory.CreateDirectory(path);
         }
     }
